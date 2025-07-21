@@ -16,6 +16,15 @@ module testbench;
 
     class my_class_1;
 
+        rand bit [31:0] divident;  
+        rand bit [ 7:0] divider;   
+
+        constraint constr { 
+            divident > 0; 
+            divident % divider == 0; 
+            divident > divider; 
+        } 
+
     endclass
 
 
@@ -34,6 +43,15 @@ module testbench;
 
     class my_class_2;
 
+        rand logic [31:0] data; 
+        rand logic [ 7:0] addr;    
+
+        constraint constr { 
+            data == 0 -> addr == 128; 
+            (data & data - 1) == 0; 
+            addr < 64; 
+        }
+
     endclass
 
 
@@ -51,6 +69,21 @@ module testbench;
     //   4) если индекс элемента четный - элемент тоже четный.
 
     class my_class_3;
+
+        rand int data []; 
+
+        constraint constr { 
+            data.size() % 2 == 0;
+            data.size() < 10;
+            data.size() > 0; 
+            foreach (data[i]) {
+                data[i] < 200;
+                if (i % 2 == 0) {
+                  data[i] % 2 == 0;  
+                }
+            }
+        
+        }
 
     endclass
 
@@ -71,6 +104,18 @@ module testbench;
     //      иначе каждый элемент 'data' уникален;               
 
     class my_class_4;
+        rand bit [1:0] size;  
+        rand bit [7:0] data [];      
+
+         constraint constr { 
+            data.size() == size;
+            size > 0;
+            if (size == 3) {
+                foreach (data[i]) data[i] == 0;
+            } else {
+                unique {data};
+            }
+         }
 
     endclass
 
@@ -91,6 +136,21 @@ module testbench;
     //   3) если 'req' и 'we' равны 1, то 'addr' меньше 128.           
 
     class my_class_5;
+        rand bit [7:0] data;  
+        rand bit [7:0] addr; 
+        rand bit req;    
+        rand bit we; 
+
+        constraint constr { 
+            addr[1:0] == 0;
+            if (req){
+                data >= 128;
+                data <= 200;
+            }
+            if (req && we) {
+                addr < 128;
+            }
+        }
 
     endclass
 
@@ -112,6 +172,25 @@ module testbench;
     //      чаще, чем раз в 4 значения.               
 
     class my_class_6;
+
+        rand bit [31:0] tdata [];  
+        rand bit        tid;   
+        rand bit        tlast [];      
+
+        constraint constr {
+            tdata.size() == tlast.size();
+            tdata.size() > 0;
+            tlast.size() > 0;
+            tdata.size() < 32;
+            tlast.size() < 32;
+            tdata.size() % 8 == 0;
+            tlast.size() % 8 == 0;
+            foreach (tlast[i]){
+                if (i % 4 != 0){
+                    tlast[i] == 0;
+                }
+            }
+        }
 
     endclass
 
