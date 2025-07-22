@@ -110,6 +110,7 @@ module testbench;
     // в 5 раз больше.
     // Сохраните стабильность рандомизации для первой
     // половины
+    // make EXAMPLE=02_pow SIM_OPTS=-gui
     task do_master_gen(
         int pkt_amount = 100,
         int size_min   = 1,

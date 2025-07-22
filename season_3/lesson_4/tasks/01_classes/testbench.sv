@@ -12,7 +12,8 @@ module testbench;
     //  Опишите ограничения такие, что:                  
     //    1) ~divident~ больше 0;                         
     //    2) ~divident~ делится на ~divider~ без остатка;
-    //    3) ~divident~ больше ~divider~.                
+    //    3) ~divident~ больше ~divider~.
+    // make EXAMPLE=01_classes SIM_OPTS=-gui WAVES=0                
 
     class my_class_1;
 
@@ -46,11 +47,9 @@ module testbench;
         rand logic [31:0] data; 
         rand logic [ 7:0] addr;    
 
-        constraint constr { 
-            data == 0 -> addr == 128; 
-            (data & data - 1) == 0; 
-            addr < 64; 
-        }
+        constraint constr1 { data == 0 -> addr == 128; }
+        constraint constr2 { ($onehot(data) == 1) || (data == 0); }
+        constraint constr3 { addr < 64;  }
 
     endclass
 
@@ -179,11 +178,8 @@ module testbench;
 
         constraint constr {
             tdata.size() == tlast.size();
-            tdata.size() > 0;
             tlast.size() > 0;
-            tdata.size() < 32;
             tlast.size() < 32;
-            tdata.size() % 8 == 0;
             tlast.size() % 8 == 0;
             foreach (tlast[i]){
                 if (i % 4 != 0){
