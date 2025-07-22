@@ -517,8 +517,14 @@ module testbench;
     // Наследуйтесь от базового класса.
     // При выполнении воспользуйтесь написанием дополнительных
     // constraints.
+    // make EXAMPLE=01_pow SIM_OPTS=-gui 
 
-    class /* ?? */ extends test_cfg_base;
+    class test_cfg_bottleneck extends test_cfg_base;
+
+    constraint constr {
+        slave_delay_min >= master_delay_max * 5;
+        master_delay_min != 0;
+    };
 
     endclass
     
@@ -528,7 +534,19 @@ module testbench;
     // Для подмены конфигурации используйте переопределение
     // конструктора 'new()'.
 
-    class /* ?? */ extends test_base;
+    class new_cfg extends test_base;
+    
+        function new();
+
+            test_cfg_bottleneck cfg;
+            super.new();
+            cfg = new();
+            assert(cfg.randomize());
+            env.master.master_gen.cfg = cfg;
+            env.slave.slave_driver.cfg = cfg;
+            env.check.cfg = cfg;
+            
+        endfunction
 
     endclass
 
@@ -539,7 +557,7 @@ module testbench;
     //   make EXAMPLE=01_pow SIM_OPTS="-gui -sv_seed <значение-seed>" 
 
     initial begin
-        /* ?? */ test;
+        new_cfg test;
         test = new();
         fork
             reset();

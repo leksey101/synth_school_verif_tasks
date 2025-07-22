@@ -71,8 +71,17 @@ module testbench;
     // который c вероятностью в 2% "зависает"
     // (перестает генерировать ready) на 500
     // тактов
+    // make EXAMPLE=03_pow SIM_OPTS=-gui WITH_PKG=1
 
-    class /* ?? */ extends slave_driver_base;
+    class lag_driver extends slave_driver_base;
+
+        virtual task drive_slave();
+            int lag;
+            assert(std::randomize(lag) with {lag dist {500 := 1, 0 := 49};});
+            
+            super.drive_slave();
+            repeat (lag) @(posedge clk);
+        endtask
 
     endclass
 
@@ -84,7 +93,23 @@ module testbench;
     // драйвера поля нового драйвера необходимо также
     // проинициализировать.
 
-    class /* ?? */ extends test_base;
+    class lag_test_base extends test_base;
+
+        lag_driver driver;
+        function new (
+            virtual axis_intf vif_master,
+            virtual axis_intf vif_slave
+        );
+
+            super.new(vif_master, vif_slave);
+            driver = new();
+            env.slave.slave_driver = driver;
+
+            env.slave.slave_driver.cfg   = cfg;
+            env.master.master_driver.gen2drv = gen2drv;
+            env.slave.slave_driver.vif    = this.vif_slave;
+
+        endfunction 
 
     endclass
 
@@ -105,7 +130,7 @@ module testbench;
     // Запустите новый тестовый сценарий
 
     initial begin
-        /* ?? */ test;
+        lag_test_base test;
         test = new(intf_master, intf_slave);
         fork
             reset();
