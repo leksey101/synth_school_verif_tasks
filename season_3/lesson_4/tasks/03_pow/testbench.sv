@@ -104,11 +104,15 @@ module testbench;
         int delay_min  = 0,
         int delay_max  = 10
     );
-        small_data_packet p; // Подмените тут
+        packet p; // Подмените тут
+        small_data_packet new_p;
+        
         int size;
         void'(std::randomize(size) with {size inside {[size_min:size_max]};});
         for(int i = 0; i < size; i = i + 1) begin
             p = new();
+            new_p = new();
+            p = new_p;
             if( !p.randomize() with {
                 p.delay inside {[delay_min:delay_max]};
                 p.tlast == (i == size - 1);
