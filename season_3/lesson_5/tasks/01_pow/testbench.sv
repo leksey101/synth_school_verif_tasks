@@ -466,8 +466,11 @@ module testbench;
         mailbox#(packet) out_mbx;
 
         function new();
-            // Создание
             cfg = new();
+            gen_cfg(cfg);
+        endfunction
+
+        virtual function void gen_cfg (test_cfg_base cfg);
             env = new();
             gen2drv = new();
             in_mbx  = new();
@@ -517,7 +520,6 @@ module testbench;
     // Наследуйтесь от базового класса.
     // При выполнении воспользуйтесь написанием дополнительных
     // constraints.
-    // make EXAMPLE=01_pow SIM_OPTS=-gui 
 
     class test_cfg_bottleneck extends test_cfg_base;
 
@@ -537,15 +539,10 @@ module testbench;
     class new_cfg extends test_base;
     
         function new();
-
             test_cfg_bottleneck cfg;
             super.new();
             cfg = new();
-            assert(cfg.randomize());
-            env.master.master_gen.cfg = cfg;
-            env.slave.slave_driver.cfg = cfg;
-            env.check.cfg = cfg;
-            
+            super.gen_cfg(cfg);
         endfunction
 
     endclass

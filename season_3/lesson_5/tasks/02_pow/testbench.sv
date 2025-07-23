@@ -76,11 +76,10 @@ module testbench;
         virtual task drive_master(packet p);
             super.drive_master(p);
             if (p.tlast) begin
-               repeat(100) @(posedge clk); 
+                repeat(100) @(posedge clk); 
             end
         endtask
     endclass
-
 
     // TODO:
     // Создайте тестовый сценарий, в котором замените
@@ -98,13 +97,7 @@ module testbench;
             driver_delay driver;
             super.new(vif_master, vif_slave);
             driver = new();
-
-            env.master.master_driver = driver;
-
-            env.master.master_driver.cfg = cfg;
-            env.master.master_driver.gen2drv = gen2drv;
-            env.master.master_driver.vif  = this.vif_master;
-
+            super.gen_cfg(driver);
         endfunction
     endclass
 

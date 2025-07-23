@@ -77,14 +77,15 @@ module testbench;
 
         virtual task drive_slave();
             int lag;
-            assert(std::randomize(lag) with {lag dist {500 := 1, 0 := 49};});
-            
+            randcase
+                1:  lag = 500;
+                49: lag = 0;
+            endcase
             super.drive_slave();
             repeat (lag) @(posedge clk);
         endtask
 
     endclass
-
 
     // TODO:
     // Создайте тестовый сценарий, в котором замените
@@ -100,15 +101,9 @@ module testbench;
             virtual axis_intf vif_master,
             virtual axis_intf vif_slave
         );
-
             super.new(vif_master, vif_slave);
             driver = new();
-            env.slave.slave_driver = driver;
-
-            env.slave.slave_driver.cfg   = cfg;
-            env.master.master_driver.gen2drv = gen2drv;
-            env.slave.slave_driver.vif    = this.vif_slave;
-
+            super.gen_cfg(driver);
         endfunction 
 
     endclass
