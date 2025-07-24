@@ -110,6 +110,7 @@ module testbench;
     // в 5 раз больше.
     // Сохраните стабильность рандомизации для первой
     // половины
+    // make EXAMPLE=02_pow SIM_OPTS=-gui
     task do_master_gen(
         int pkt_amount = 100,
         int size_min   = 1,
@@ -117,8 +118,12 @@ module testbench;
         int delay_min  = 0,
         int delay_max  = 10
     );
-        repeat(pkt_amount) begin
+        repeat(pkt_amount/2) begin
             gen_master(size_min, size_max, delay_min, delay_max);
+        end
+
+        repeat(pkt_amount/2) begin
+            gen_master(size_min, size_max, delay_min*5, delay_max*5);
         end
     endtask
 
