@@ -62,6 +62,13 @@ module testbench;
     // Наследуйте класс 'small_data_packet' от 'packet'.
     // Данные для этого класса должны быть в интервале
     // от 0 до 256.
+    // make EXAMPLE=03_pow SIM_OPTS=-gui
+
+    class small_data_packet extends packet;
+        constraint constr {
+            tdata inside {[0:256]};
+        }
+    endclass
 
 
     mailbox#(packet) gen2drv = new();
@@ -98,10 +105,14 @@ module testbench;
         int delay_max  = 10
     );
         packet p; // Подмените тут
+        small_data_packet new_p;
+        
         int size;
         void'(std::randomize(size) with {size inside {[size_min:size_max]};});
         for(int i = 0; i < size; i = i + 1) begin
             p = new();
+            new_p = new();
+            p = new_p;
             if( !p.randomize() with {
                 p.delay inside {[delay_min:delay_max]};
                 p.tlast == (i == size - 1);
