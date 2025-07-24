@@ -94,11 +94,9 @@ module testbench;
             virtual axis_intf vif_slave
         );
             driver_delay driver_delay = new();
-            super.new(vif_master, vif_slave);
-            super.gen_cfg(driver_delay);
+            super.new(vif_master, vif_slave, driver_delay);
         endfunction
     endclass
-
 
     //---------------------------------
     // Выполнение

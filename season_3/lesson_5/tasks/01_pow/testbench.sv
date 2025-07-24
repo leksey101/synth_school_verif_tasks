@@ -465,12 +465,8 @@ module testbench;
         mailbox#(packet) in_mbx;
         mailbox#(packet) out_mbx;
 
-        function new();
-            cfg = new();
-            gen_cfg(cfg);
-        endfunction
-
-        virtual function void gen_cfg (test_cfg_base cfg);
+        function new(test_cfg_base cfg_new);
+            cfg = cfg_new;
             env = new();
             gen2drv = new();
             in_mbx  = new();
@@ -539,7 +535,7 @@ module testbench;
     class test_bottleneck extends test_base;
         function new();
             test_cfg_bottleneck cfg = new();
-            super.gen_cfg(cfg);
+            super.new(cfg);
         endfunction
     endclass
 

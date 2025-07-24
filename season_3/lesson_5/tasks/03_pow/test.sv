@@ -13,17 +13,13 @@
 
         function new (
             virtual axis_intf vif_master,
-            virtual axis_intf vif_slave
+            virtual axis_intf vif_slave,
+            slave_driver_base driver_s,
+            master_driver_base driver_m
         );
             // Получение интерфейсов
-            slave_driver_base  driver_base_s = new();
-            master_driver_base driver_base_m = new();
             this.vif_master = vif_master;
             this.vif_slave  = vif_slave;
-            gen_cfg (driver_base_s, driver_base_m);
-        endfunction
-
-        virtual function void gen_cfg (slave_driver_base driver_s, master_driver_base driver_m);
             // Создание
             cfg = new();
             env = new();
@@ -55,7 +51,7 @@
             env.slave.slave_driver.vif    = this.vif_slave;
             env.slave.slave_monitor.vif   = this.vif_slave;
         endfunction
-
+        
         virtual task run();
             bit done;
             fork
