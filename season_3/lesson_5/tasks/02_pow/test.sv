@@ -4,7 +4,6 @@
         virtual axis_intf vif_slave;
 
         test_cfg_base cfg;
-        master_driver_base driver;
 
         env_base env;
 
@@ -16,10 +15,10 @@
             virtual axis_intf vif_master,
             virtual axis_intf vif_slave
         );
+            master_driver_base driver_base = new();
             this.vif_master = vif_master;
             this.vif_slave  = vif_slave;
-            driver = new();
-            gen_cfg(driver);
+            gen_cfg(driver_base);
         endfunction
 
         virtual function void gen_cfg (master_driver_base driver);

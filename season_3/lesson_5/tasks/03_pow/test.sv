@@ -4,7 +4,6 @@
         virtual axis_intf vif_slave;
 
         test_cfg_base cfg;
-        slave_driver_base driver;
 
         env_base env;
 
@@ -17,13 +16,14 @@
             virtual axis_intf vif_slave
         );
             // Получение интерфейсов
+            slave_driver_base  driver_base_s = new();
+            master_driver_base driver_base_m = new();
             this.vif_master = vif_master;
             this.vif_slave  = vif_slave;
-            driver = new();
-            gen_cfg (driver);
+            gen_cfg (driver_base_s, driver_base_m);
         endfunction
 
-        virtual function void gen_cfg (slave_driver_base driver);
+        virtual function void gen_cfg (slave_driver_base driver_s, master_driver_base driver_m);
             // Создание
             cfg = new();
             env = new();
@@ -35,8 +35,9 @@
                 $error("Can't randomize test configuration!");
                 $finish();
             end
-            env.slave.slave_driver = driver;
-
+            env.slave.slave_driver = driver_s;
+            env.master.master_driver = driver_m;
+            
             env.master.master_gen.cfg    = cfg;
             env.master.master_driver.cfg = cfg;
             env.slave.slave_driver.cfg   = cfg;

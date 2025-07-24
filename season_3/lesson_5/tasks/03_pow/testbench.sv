@@ -73,19 +73,29 @@ module testbench;
     // тактов
     // make EXAMPLE=03_pow SIM_OPTS=-gui WITH_PKG=1
 
-    class lag_driver extends slave_driver_base;
-
+    class lag_driver_slave extends slave_driver_base;
         virtual task drive_slave();
-            int lag;
-            randcase
-                1:  lag = 500;
-                49: lag = 0;
-            endcase
             super.drive_slave();
-            repeat (lag) @(posedge clk);
+            randcase
+                1:  begin 
+                    repeat (500) @(posedge clk);
+                end
+                49: ;
+            endcase
         endtask
-
     endclass
+
+    class lag_driver_master extends master_driver_base;
+        virtual task drive_master(packet p);
+            super.drive_master(p);
+            randcase
+                1:  begin 
+                    repeat (500) @(posedge clk);
+                end
+                49: ;
+            endcase
+        endtask
+    endclass 
 
     // TODO:
     // Создайте тестовый сценарий, в котором замените
@@ -95,19 +105,16 @@ module testbench;
     // проинициализировать.
 
     class lag_test_base extends test_base;
-
-        lag_driver driver;
         function new (
             virtual axis_intf vif_master,
             virtual axis_intf vif_slave
         );
+            lag_driver_slave driver_lag_s = new();
+            lag_driver_master driver_lag_m = new();
             super.new(vif_master, vif_slave);
-            driver = new();
-            super.gen_cfg(driver);
+            super.gen_cfg(driver_lag_s, driver_lag_m);
         endfunction 
-
     endclass
-
 
     //---------------------------------
     // Выполнение

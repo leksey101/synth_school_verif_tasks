@@ -536,15 +536,11 @@ module testbench;
     // Для подмены конфигурации используйте переопределение
     // конструктора 'new()'.
 
-    class new_cfg extends test_base;
-    
+    class test_bottleneck extends test_base;
         function new();
-            test_cfg_bottleneck cfg;
-            super.new();
-            cfg = new();
+            test_cfg_bottleneck cfg = new();
             super.gen_cfg(cfg);
         endfunction
-
     endclass
 
     // TODO:
@@ -554,7 +550,7 @@ module testbench;
     //   make EXAMPLE=01_pow SIM_OPTS="-gui -sv_seed <значение-seed>" 
 
     initial begin
-        new_cfg test;
+        test_bottleneck test;
         test = new();
         fork
             reset();

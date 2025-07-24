@@ -89,15 +89,13 @@ module testbench;
     // проинициализировать.
 
     class test_delay extends test_base;
-
         function new (
             virtual axis_intf vif_master,
             virtual axis_intf vif_slave
         );
-            driver_delay driver;
+            driver_delay driver_delay = new();
             super.new(vif_master, vif_slave);
-            driver = new();
-            super.gen_cfg(driver);
+            super.gen_cfg(driver_delay);
         endfunction
     endclass
 
