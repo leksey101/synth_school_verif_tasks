@@ -465,9 +465,8 @@ module testbench;
         mailbox#(packet) in_mbx;
         mailbox#(packet) out_mbx;
 
-        function new();
-            // Создание
-            cfg = new();
+        function new(test_cfg_base cfg_new);
+            cfg = cfg_new;
             env = new();
             gen2drv = new();
             in_mbx  = new();
@@ -518,7 +517,12 @@ module testbench;
     // При выполнении воспользуйтесь написанием дополнительных
     // constraints.
 
-    class /* ?? */ extends test_cfg_base;
+    class test_cfg_bottleneck extends test_cfg_base;
+
+    constraint constr {
+        slave_delay_min >= master_delay_max * 5;
+        master_delay_min != 0;
+    };
 
     endclass
     
@@ -528,8 +532,11 @@ module testbench;
     // Для подмены конфигурации используйте переопределение
     // конструктора 'new()'.
 
-    class /* ?? */ extends test_base;
-
+    class test_bottleneck extends test_base;
+        function new();
+            test_cfg_bottleneck cfg = new();
+            super.new(cfg);
+        endfunction
     endclass
 
     // TODO:
@@ -539,7 +546,7 @@ module testbench;
     //   make EXAMPLE=01_pow SIM_OPTS="-gui -sv_seed <значение-seed>" 
 
     initial begin
-        /* ?? */ test;
+        test_bottleneck test;
         test = new();
         fork
             reset();

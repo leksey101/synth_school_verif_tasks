@@ -13,9 +13,9 @@
 
         function new (
             virtual axis_intf vif_master,
-            virtual axis_intf vif_slave
+            virtual axis_intf vif_slave,
+            master_driver_base driver
         );
-            // Получение интерфейсов
             this.vif_master = vif_master;
             this.vif_slave  = vif_slave;
             // Создание
@@ -29,6 +29,8 @@
                 $error("Can't randomize test configuration!");
                 $finish();
             end
+            env.master.master_driver = driver;
+
             env.master.master_gen.cfg    = cfg;
             env.master.master_driver.cfg = cfg;
             env.slave.slave_driver.cfg   = cfg;

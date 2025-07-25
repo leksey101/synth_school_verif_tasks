@@ -71,11 +71,31 @@ module testbench;
     // который c вероятностью в 2% "зависает"
     // (перестает генерировать ready) на 500
     // тактов
+    // make EXAMPLE=03_pow SIM_OPTS=-gui WITH_PKG=1
 
-    class /* ?? */ extends slave_driver_base;
-
+    class lag_driver_slave extends slave_driver_base;
+        virtual task drive_slave();
+            super.drive_slave();
+            randcase
+                1:  begin 
+                    repeat (500) @(posedge clk);
+                end
+                49: ;
+            endcase
+        endtask
     endclass
 
+    class lag_driver_master extends master_driver_base;
+        virtual task drive_master(packet p);
+            super.drive_master(p);
+            randcase
+                1:  begin 
+                    repeat (500) @(posedge clk);
+                end
+                49: ;
+            endcase
+        endtask
+    endclass 
 
     // TODO:
     // Создайте тестовый сценарий, в котором замените
@@ -84,13 +104,32 @@ module testbench;
     // драйвера поля нового драйвера необходимо также
     // проинициализировать.
 
-    class /* ?? */ extends test_base;
+    class lag_test_base extends test_base;
+        function new (
+            virtual axis_intf vif_master,
+            virtual axis_intf vif_slave
+        );
+            super.new(vif_master, vif_slave);
+            super.build();
+        endfunction 
+
+        virtual function slave_driver_base create_slave_driver ();
+            lag_driver_slave d_s = new();
+            return d_s;
+        endfunction
+
+        virtual function master_driver_base create_master_driver ();
+            lag_driver_master d_m = new();
+            return d_m;
+        endfunction
 
     endclass
 
-
     //---------------------------------
-    // Выполнение
+    // 
+    
+
+    
     //---------------------------------
 
     // Генерация тактового сигнала
@@ -105,7 +144,7 @@ module testbench;
     // Запустите новый тестовый сценарий
 
     initial begin
-        /* ?? */ test;
+        lag_test_base test;
         test = new(intf_master, intf_slave);
         fork
             reset();

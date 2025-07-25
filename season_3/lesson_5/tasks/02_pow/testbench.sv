@@ -70,11 +70,16 @@ module testbench;
     // (отнаследуйтесь от 'master_driver_base'),
     // который в конце каждого пакета делает
     // дополнительную задержку в 100 тактов.
+    // make EXAMPLE=02_pow SIM_OPTS=-gui WITH_PKG=1
 
-    class /* ?? */ extends master_driver_base;
-
+    class driver_delay extends master_driver_base;
+        virtual task drive_master(packet p);
+            super.drive_master(p);
+            if (p.tlast) begin
+                repeat(100) @(posedge clk); 
+            end
+        endtask
     endclass
-
 
     // TODO:
     // Создайте тестовый сценарий, в котором замените
@@ -83,10 +88,15 @@ module testbench;
     // драйвера поля нового драйвера необходимо также
     // проинициализировать.
 
-    class /* ?? */ extends test_base;
-
+    class test_delay extends test_base;
+        function new (
+            virtual axis_intf vif_master,
+            virtual axis_intf vif_slave
+        );
+            driver_delay driver_delay = new();
+            super.new(vif_master, vif_slave, driver_delay);
+        endfunction
     endclass
-
 
     //---------------------------------
     // Выполнение
@@ -104,7 +114,7 @@ module testbench;
     // Запустите новый тестовый сценарий
 
     initial begin
-        /* ?? */ test;
+        test_delay test;
         test = new(intf_master, intf_slave);
         fork
             reset();
