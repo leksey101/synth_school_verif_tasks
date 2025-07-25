@@ -26,13 +26,58 @@ module testbench;
     // (используйте GUI).
     // Добавьте генерацию недостающих входных значений
     // и добейтесь покрытия в 100%.
+    // make EXAMPLE=03_sum SIM_OPTS="-gui"
 
     initial begin
         @done;
         // TODO:
         // Добавьте недостающие входные воздействия здесь.
         // ...
-        
+        for (int i = 2; i <= 49; i++) begin
+            @(posedge clk);
+            a <= i;
+        end
+        for (int i = 100; i <= 170; i++) begin
+            @(posedge clk);
+            if (i % 2 == 0) begin
+                a <= i;
+            end
+        end
+        for (int i = 50; i <= 63; i++) begin
+            @(posedge clk);
+            b <= i;
+        end
+        for (int i = 173; i <= 253; i++) begin
+            @(posedge clk);
+            if (i % 2 != 0) begin
+            b <= i;
+            end
+        end
+        for (int i = 64; i <= 171; i++) begin
+            @(posedge clk);
+            a <= 255;
+            b <= i;
+        end
+        @(posedge clk);
+            b <= 255;
+        @(posedge clk);
+            a <= 180;  
+        for (int i = 172; i <= 255; i++) begin
+            @(posedge clk);
+            b <= 0;
+            a <= i;
+        end
+        @(posedge clk);
+            a <= 0;
+        @(posedge clk);
+            a <= 9;
+        @(posedge clk);
+            b <= 1;
+            a <= 1;
+        @(posedge clk);
+            a <= 0;
+        @(posedge clk);
+            a <= 9;
         @(posedge clk);
         ->> user_done;
     end
