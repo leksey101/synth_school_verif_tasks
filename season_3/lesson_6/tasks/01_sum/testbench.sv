@@ -25,10 +25,18 @@ module testbench;
     // Напишите модель покрытия, при помощи
     // которой определите, какие значения
     // принимают переменные 'a' и 'b'.
+    // make EXAMPLE=01_sum SIM_OPTS="-gui -sv_seed 12345"
 
     covergroup sum_cg @(posedge clk);
         // Пишите здесь
         // ...
+        a_cp: coverpoint a {
+            bins a1 [256] = {[0:255]};
+        }
+
+        b_cp: coverpoint b {
+            bins b1 [256] = {[0:255]};
+        }
     endgroup
 
     sum_cg cg = new();
