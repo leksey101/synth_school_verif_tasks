@@ -13,13 +13,16 @@
 
         function new (
             virtual axis_intf vif_master,
-            virtual axis_intf vif_slave,
-            slave_driver_base driver_s,
-            master_driver_base driver_m
+            virtual axis_intf vif_slave
         );
+        
             // Получение интерфейсов
             this.vif_master = vif_master;
             this.vif_slave  = vif_slave;
+            build();
+        endfunction
+
+        function void build ();
             // Создание
             cfg = new();
             env = new();
@@ -31,9 +34,9 @@
                 $error("Can't randomize test configuration!");
                 $finish();
             end
-            env.slave.slave_driver = driver_s;
-            env.master.master_driver = driver_m;
-            
+            env.slave.slave_driver = create_slave_driver();
+            env.master.master_driver = create_master_driver();
+
             env.master.master_gen.cfg    = cfg;
             env.master.master_driver.cfg = cfg;
             env.slave.slave_driver.cfg   = cfg;
@@ -51,7 +54,18 @@
             env.slave.slave_driver.vif    = this.vif_slave;
             env.slave.slave_monitor.vif   = this.vif_slave;
         endfunction
-        
+
+        virtual function slave_driver_base create_slave_driver ();
+            slave_driver_base d_s = new();
+            // $fatal(2, "I am here");
+            return d_s;
+        endfunction
+
+        virtual function master_driver_base create_master_driver ();
+            master_driver_base d_m = new();
+            return d_m;
+        endfunction
+
         virtual task run();
             bit done;
             fork

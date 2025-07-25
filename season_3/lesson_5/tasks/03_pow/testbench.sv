@@ -109,14 +109,27 @@ module testbench;
             virtual axis_intf vif_master,
             virtual axis_intf vif_slave
         );
-            lag_driver_slave driver_lag_s = new();
-            lag_driver_master driver_lag_m = new();
-            super.new(vif_master, vif_slave, driver_lag_s, driver_lag_m);
+            super.new(vif_master, vif_slave);
+            super.build();
         endfunction 
+
+        virtual function slave_driver_base create_slave_driver ();
+            lag_driver_slave d_s = new();
+            return d_s;
+        endfunction
+
+        virtual function master_driver_base create_master_driver ();
+            lag_driver_master d_m = new();
+            return d_m;
+        endfunction
+
     endclass
 
     //---------------------------------
-    // Выполнение
+    // 
+    
+
+    
     //---------------------------------
 
     // Генерация тактового сигнала
