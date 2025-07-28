@@ -53,7 +53,21 @@
             //      сигналы
             //   3) Подождите 1 такт и выставите vif.penable = 1
             //   4) Ждите такты, пока vif.pready != 1
-            //   5) Сбросьте vif.psel и vif.penable в 0
+            //   5) Сбросьте vif.psel и vif.penable в 0 
+            //  make EXAMPLE=01_vip SIM_OPTS=-gui
+            int delay;
+            assert(std::randomize(delay) with {delay inside {[cfg.master_delay_min:cfg.master_delay_max]};});
+            repeat (delay) @(posedge vif.clk);
+            vif.psel <= 1;
+            vif.pwrite <= p.pwrite;
+            vif.paddr <= p.paddr;
+            vif.pwdata <= p.pwdata;
+            @(posedge vif.clk);
+            vif.penable <= 1;
+            do @(posedge vif.clk);
+            while (!vif.pready);
+            vif.psel <= 0;
+            vif.penable <= 0;
         endtask
 
     endclass
