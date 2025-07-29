@@ -26,12 +26,33 @@ module testbench;
     // (используйте GUI).
     // Добавьте генерацию недостающих входных значений
     // и добейтесь покрытия в 100%.
+    // make EXAMPLE=02_sum SIM_OPTS=-gui
 
     initial begin
         @done;
         // TODO:
         // Добавьте недостающие входные воздействия здесь
         // ...
+        a <= 0;
+        @(posedge clk);
+        a <= 32'hFF;
+        b <= 32'hFF;
+        for (int i = 15; i < 48; i ++) begin
+            @(posedge clk);
+            a <= i;
+            b <= i + 48;
+        end
+        @(posedge clk);
+        a <= 49;
+        b <= 99;
+        @(posedge clk);
+        b <= 52;
+        @(posedge clk);
+        repeat (100) begin
+            @(posedge clk);
+            assert(std::randomize(a) with { a inside {[150:250]}; a % 2 == 0; });
+            assert(std::randomize(b) with { b inside {[120:130]}; b % 2 != 0; });
+        end
         @(posedge clk);
         $finish();
     end

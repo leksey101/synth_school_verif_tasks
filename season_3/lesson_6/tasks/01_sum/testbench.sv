@@ -4,10 +4,13 @@ module testbench;
     logic clk;
     logic aresetn;
 
-    // Остальные сигналы
     logic [7:0] a;
     logic [7:0] b;
     logic [7:0] c;
+
+    //intf intf (clk, aresetn);
+
+    import package_cover::*;
 
     sum DUT(
         .clk     ( clk     ),
@@ -25,12 +28,15 @@ module testbench;
     // Напишите модель покрытия, при помощи
     // которой определите, какие значения
     // принимают переменные 'a' и 'b'.
+    // make EXAMPLE=01_sum SIM_OPTS="-gui -sv_seed 12345"
 
-    covergroup sum_cg @(posedge clk);
-        // Пишите здесь
-        // ...
-    endgroup
+    class_cover cg = new();
 
-    sum_cg cg = new();
+    initial begin
+        forever begin
+            @(posedge clk);
+            cg.sum_cg.sample(a,b);
+        end
+    end
 
 endmodule
